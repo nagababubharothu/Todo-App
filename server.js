@@ -3,23 +3,25 @@ const mongoose = require("mongoose");
 const authRoutes = require("./routes/authRoutes");
 const cors = require("cors");
 require("dotenv").config();
+const path = require("path");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/auth", authRoutes);
+// serve static files
+app.use(express.static(path.join(__dirname, "public")));
 
-app.use(express.static("public"));
+// ✅ root route → show login page first
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "login.html"));
+});
+
+app.use("/api/auth", authRoutes);
 
 const todoRoutes = require("./routes/todoRoutes");
 app.use("/api/todos", todoRoutes);
-
-/* ✅ ADD THIS CODE */
-app.get("/", (req, res) => {
-    res.redirect("/login.html");
-});
 
 mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log("MongoDB Connected"))
