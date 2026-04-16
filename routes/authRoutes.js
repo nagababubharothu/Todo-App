@@ -6,7 +6,7 @@ const User = require("../models/User");
 const router = express.Router();
 const SECRET = "secretkey";
 
-// SIGNUP
+// Signup
 router.post("/signup", async (req, res) => {
     const { username, email, password } = req.body;
 
@@ -22,7 +22,7 @@ router.post("/signup", async (req, res) => {
     res.json({ message: "User created" });
 });
 
-// LOGIN
+// Login
 router.post("/login", async (req, res) => {
     const { email, password } = req.body;
 

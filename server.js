@@ -11,10 +11,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Serve frontend
+// Static files
 app.use(express.static(path.join(__dirname, "public")));
 
-// Default route → login page
+// Default route
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "login.html"));
 });

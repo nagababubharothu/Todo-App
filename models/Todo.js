@@ -2,10 +2,6 @@ const mongoose = require("mongoose");
 
 const TodoSchema = new mongoose.Schema({
     task: String,
-    completed: {
-        type: Boolean,
-        default: false
-    },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"

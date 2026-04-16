@@ -3,13 +3,13 @@ const router = express.Router();
 const Todo = require("../models/Todo");
 const auth = require("../middleware/auth");
 
-// GET TODOS (only user)
+// Get todos
 router.get("/", auth, async (req, res) => {
     const todos = await Todo.find({ userId: req.userId });
     res.json(todos);
 });
 
-// ADD TODO
+// Add todo
 router.post("/", auth, async (req, res) => {
     const todo = new Todo({
         task: req.body.task,
@@ -20,7 +20,7 @@ router.post("/", auth, async (req, res) => {
     res.json(todo);
 });
 
-// DELETE TODO
+// Delete
 router.delete("/:id", auth, async (req, res) => {
     await Todo.findByIdAndDelete(req.params.id);
     res.json({ message: "Deleted" });
