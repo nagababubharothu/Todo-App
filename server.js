@@ -11,15 +11,19 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Serve frontend
 app.use(express.static(path.join(__dirname, "public")));
 
+// Default route → login page
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/todos", todoRoutes);
 
+// DB
 mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log("MongoDB Connected"))
 .catch(err => console.log(err));
