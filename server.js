@@ -16,7 +16,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Default route → login page
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
+    res.sendFile(path.join(__dirname, "public", "login.html"));
 });
 
 // Routes
