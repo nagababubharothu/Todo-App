@@ -92,6 +92,6 @@ function logout(){
 }
 
 // auto load
-if(window.location.pathname.includes("index.html")){
+if(window.location.pathname.includes("login.html")){
     loadTodos();
 }
