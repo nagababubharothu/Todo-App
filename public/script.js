@@ -31,7 +31,7 @@ async function login(){
 
     if(res.ok){
         localStorage.setItem("token",data.token);
-        window.location.href="index.html";
+        window.location.href="login.html";
     }else{
         alert(data.message);
     }
