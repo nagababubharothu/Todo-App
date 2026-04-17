@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Payment</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<title>Payment</title>
+<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-
 <div class="container">
-    <h2>Dummy Payment Gateway 💳</h2>
+<h2>Dummy Payment Gateway 💳</h2>
 
-    <p>Amount: ₹{{ amount }}</p>
+<p>Amount: ₹100</p>
 
-    <button onclick="success()">Pay Successfully</button>
-    <button onclick="fail()">Fail Payment</button>
+<button onclick="success()" class="primary">Pay Successfully</button>
+<button onclick="fail()" class="delete">Fail Payment</button>
 </div>
 
 <script>
 function success() {
-    window.location.href = "/payment-success";
+    window.location.href = "/payment_success.html";
 }
 
 function fail() {

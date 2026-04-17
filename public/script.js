@@ -1,5 +1,6 @@
 const API = "/api/todos";
 
+// ON LOAD
 window.onload = function () {
     const token = localStorage.getItem("token");
 
@@ -11,35 +12,35 @@ window.onload = function () {
     }
 };
 
+// SHOW LOGIN
 function showLogin() {
     document.getElementById("loginSection").style.display = "block";
     document.getElementById("todoSection").style.display = "none";
 }
 
+// SHOW TODO
 function showTodo() {
     document.getElementById("loginSection").style.display = "none";
     document.getElementById("todoSection").style.display = "block";
 }
 
-// Signup
+// SIGNUP
 async function signup() {
     const username = document.getElementById("username").value;
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
-    const res = await fetch("/api/auth/signup", {
+    await fetch("/api/auth/signup", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({username, email, password})
     });
 
-    if (res.ok) {
-        alert("Signup successful");
-        window.location.href = "login.html";
-    }
+    alert("Signup successful");
+    window.location.href = "login.html";
 }
 
-// Login
+// LOGIN
 async function login() {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
@@ -61,7 +62,7 @@ async function login() {
     }
 }
 
-// Add Todo
+// ADD TASK
 async function addTask() {
     const task = document.getElementById("taskInput").value;
 
@@ -77,7 +78,29 @@ async function addTask() {
     loadTodos();
 }
 
-// Load Todos
+// SCRAPE TASK
+async function scrapeTask() {
+    const url = document.getElementById("urlInput").value;
+
+    const res = await fetch("/api/scrape/data?url=" + url);
+    const data = await res.json();
+
+    alert("Scraped: " + data[0]);
+
+    // add first scraped item as todo
+    await fetch(API, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": localStorage.getItem("token")
+        },
+        body: JSON.stringify({task: data[0]})
+    });
+
+    loadTodos();
+}
+
+// LOAD TODOS
 async function loadTodos() {
     const res = await fetch(API, {
         headers: {
@@ -95,7 +118,7 @@ async function loadTodos() {
         li.innerText = todo.task;
 
         const btn = document.createElement("button");
-        btn.innerText = "Delete";
+        btn.innerText = "❌";
         btn.classList.add("delete");
 
         btn.onclick = async () => {
@@ -113,29 +136,13 @@ async function loadTodos() {
     });
 }
 
-// Logout
+// PAYMENT NAVIGATION
+function goToPayment(){
+    window.location.href = "/payment.html";
+}
+
+// LOGOUT
 function logout() {
     localStorage.removeItem("token");
     showLogin();
-}
-
-// Payment
-async function makePayment() {
-    const res = await fetch("/api/payment/pay", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({amount:100})
-    });
-
-    const data = await res.json();
-    alert(data.message);
-}
-
-// Scraping
-async function getData() {
-    const res = await fetch("/api/scrape/data");
-    const data = await res.json();
-
-    console.log(data);
-    alert("Check console for scraped data");
 }

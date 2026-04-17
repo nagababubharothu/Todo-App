@@ -8,28 +8,45 @@
 
 <div class="container">
 
+<!-- LOGIN -->
 <div id="loginSection">
     <h2>Login</h2>
+
     <input id="email" placeholder="Email">
     <input id="password" type="password" placeholder="Password">
+
     <button onclick="login()" class="primary">Login</button>
+
     <a href="signup.html">Signup</a>
 </div>
 
+<!-- DASHBOARD -->
 <div id="todoSection" style="display:none;">
-    <h2>Todo Dashboard</h2>
+    <h2>Your Todo List</h2>
 
-    <input id="taskInput" placeholder="Enter task">
-    <button onclick="addTask()">Add</button>
+    <!-- ADD TASK -->
+    <input id="taskInput" placeholder="Enter new task">
+    <button onclick="addTask()">Add Task</button>
 
+    <hr>
+
+    <!-- SCRAPING -->
+    <h3>Scrape Website</h3>
+    <input id="urlInput" placeholder="Enter URL (https://...)">
+    <button onclick="scrapeTask()">Scrape & Add</button>
+
+    <hr>
+
+    <!-- TASK LIST -->
     <ul id="todoList"></ul>
 
+    <hr>
+
+    <!-- PAYMENT -->
     <h3>Payment</h3>
-    <button onclick="makePayment()">Pay ₹100</button>
+    <button onclick="goToPayment()">Go to Payment</button>
 
-    <h3>Web Scraping</h3>
-    <button onclick="getData()">Get Data</button>
-
+    <br><br>
     <button onclick="logout()" class="logout">Logout</button>
 </div>
 
