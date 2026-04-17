@@ -1,30 +1,70 @@
 const express = require("express");
-const axios = require("axios");
-const cheerio = require("cheerio");
+const mongoose = require("mongoose");
+const cors = require("cors");
+require("dotenv").config();
+const path = require("path");
+const redis = require("redis");
 
-const router = express.Router();
+// Routes
+const authRoutes = require("./routes/authRoutes");
+const todoRoutes = require("./routes/todoRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
+const scrapeRoutes = require("./routes/scrapeRoutes");
 
-router.get("/data", async (req, res) => {
-    try {
-        const url = req.query.url;
+const app = express();
 
-        if (!url) {
-            return res.status(400).json({ error: "URL is required" });
-        }
+// Middleware
+app.use(cors());
+app.use(express.json());
 
-        const response = await axios.get(url);
-        const $ = cheerio.load(response.data);
-
-        let results = [];
-
-        $("h1, h2, h3").each((i, el) => {
-            results.push($(el).text());
-        });
-
-        res.json(results);
-    } catch (err) {
-        res.status(500).json({ error: "Scraping failed" });
-    }
+// ================= REDIS =================
+const redisClient = redis.createClient({
+    url: process.env.REDIS_URL
 });
 
-module.exports = router;
+redisClient.connect()
+.then(() => console.log("Redis Connected"))
+.catch(err => console.log("Redis Error:", err));
+
+// Make redis globally available
+app.locals.redis = redisClient;
+
+// ================= STATIC FILES =================
+app.use(express.static(path.join(__dirname, "public")));
+
+// Default route
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "login.html"));
+});
+
+// Fix dashboard error
+app.get("/dashboard.html", (req, res) => {
+    res.redirect("/");
+});
+
+// ================= ROUTES =================
+app.use("/api/auth", authRoutes);
+app.use("/api/todos", todoRoutes);
+app.use("/api/payment", paymentRoutes);
+app.use("/api/scrape", scrapeRoutes);
+
+// ================= MONGODB =================
+mongoose.connect(process.env.MONGO_URI)
+.then(() => console.log("MongoDB Connected"))
+.catch(err => console.log("Mongo Error:", err));
+
+// ================= SERVER =================
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running on port ${PORT}`);
+});
+
+// ================= GLOBAL ERROR HANDLING =================
+process.on("uncaughtException", (err) => {
+    console.error("Uncaught Exception:", err);
+});
+
+process.on("unhandledRejection", (err) => {
+    console.error("Unhandled Rejection:", err);
+});
