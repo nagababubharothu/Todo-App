@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Todo App</title>
-<link rel="stylesheet" href="style.css">
+    <title>Todo App</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -18,10 +18,19 @@
 
 <div id="todoSection" style="display:none;">
     <h2>Todo Dashboard</h2>
+
     <input id="taskInput" placeholder="Enter task">
     <button onclick="addTask()">Add</button>
+
     <ul id="todoList"></ul>
-    <button onclick="logout()">Logout</button>
+
+    <h3>Payment</h3>
+    <button onclick="makePayment()">Pay ₹100</button>
+
+    <h3>Web Scraping</h3>
+    <button onclick="getData()">Get Data</button>
+
+    <button onclick="logout()" class="logout">Logout</button>
 </div>
 
 </div>
