@@ -1,6 +1,28 @@
 const API = "/api/todos";
 
-// Signup
+// ON LOAD
+window.onload = function(){
+    const token = localStorage.getItem("token");
+
+    if(token){
+        showTodo();
+        loadTodos();
+    }else{
+        showLogin();
+    }
+};
+
+function showLogin(){
+    document.getElementById("loginSection").style.display = "block";
+    document.getElementById("todoSection").style.display = "none";
+}
+
+function showTodo(){
+    document.getElementById("loginSection").style.display = "none";
+    document.getElementById("todoSection").style.display = "block";
+}
+
+// SIGNUP
 async function signup(){
     const username = document.getElementById("username").value;
     const email = document.getElementById("email").value;
@@ -18,7 +40,7 @@ async function signup(){
     }
 }
 
-// Login
+// LOGIN
 async function login(){
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
@@ -33,13 +55,14 @@ async function login(){
 
     if(res.ok){
         localStorage.setItem("token", data.token);
-        window.location.href="dashboard.html";
+        showTodo();
+        loadTodos();
     }else{
         alert(data.message);
     }
 }
 
-// Add task
+// ADD TASK
 async function addTask(){
     const task = document.getElementById("taskInput").value;
 
@@ -55,7 +78,7 @@ async function addTask(){
     loadTodos();
 }
 
-// Load todos
+// LOAD TODOS
 async function loadTodos(){
     const res = await fetch(API,{
         headers:{
@@ -66,8 +89,6 @@ async function loadTodos(){
     const todos = await res.json();
 
     const list = document.getElementById("todoList");
-    if(!list) return;
-
     list.innerHTML="";
 
     todos.forEach(todo=>{
@@ -92,10 +113,8 @@ async function loadTodos(){
     });
 }
 
-// Logout
+// LOGOUT
 function logout(){
     localStorage.removeItem("token");
-    window.location.href="login.html";
+    showLogin();
 }
-
-loadTodos();

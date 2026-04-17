@@ -1,20 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Login</title>
+<title>Todo App</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="container">
-<h2>Login</h2>
 
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
+<div id="loginSection">
+    <h2>Login</h2>
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+    <button onclick="login()" class="primary">Login</button>
+    <a href="signup.html">Signup</a>
+</div>
 
-<button onclick="login()" class="primary">Login</button>
+<div id="todoSection" style="display:none;">
+    <h2>Todo Dashboard</h2>
+    <input id="taskInput" placeholder="Enter task">
+    <button onclick="addTask()">Add</button>
+    <ul id="todoList"></ul>
+    <button onclick="logout()">Logout</button>
+</div>
 
-<a href="signup.html">Signup</a>
 </div>
 
 <script src="script.js"></script>
