@@ -32,6 +32,11 @@ app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "login.html"));
 });
 
+// ✅ FIX: handle dashboard.html route
+app.get("/dashboard.html", (req, res) => {
+    res.redirect("/");
+});
+
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/todos", todoRoutes);
