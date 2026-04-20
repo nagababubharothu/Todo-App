@@ -1,8 +1,6 @@
 const API = "/api/todos";
 
 let cart = [];
-let currentPrice = 0;
-let currentProduct = "";
 
 // ON LOAD
 window.onload = function () {
@@ -49,8 +47,8 @@ async function login() {
 }
 
 // ADD TASK
-async function addTask() {
-    const task = document.getElementById("taskInput").value;
+async function addTask(taskInputValue = null) {
+    const task = taskInputValue || document.getElementById("taskInput").value;
 
     await fetch(API, {
         method: "POST",
@@ -64,22 +62,24 @@ async function addTask() {
     loadTodos();
 }
 
-// SCRAPE
+// SCRAPE TASK + ADD TO CART
 async function scrapeTask() {
     const url = document.getElementById("urlInput").value;
+
+    if (!url) {
+        alert("Please enter a URL");
+        return;
+    }
 
     const res = await fetch("/api/scrape/data?url=" + encodeURIComponent(url));
     const data = await res.json();
 
-    currentPrice = data.price;
-    currentProduct = data.title;
+    alert(`Scraped: ${data.title} ₹${data.price}`);
 
-    alert(`${data.title} ₹${data.price}`);
-
-    // ADD TODO
+    // add todo
     await addTask(data.title);
 
-    // ADD CART
+    // add to cart
     cart.push({
         product: data.title,
         price: data.price,
@@ -89,7 +89,7 @@ async function scrapeTask() {
     loadTodos();
 }
 
-// LOAD TODOS WITH DATE
+// LOAD TODOS WITH DELETE BUTTON + DATE
 async function loadTodos() {
     const res = await fetch(API, {
         headers: {
@@ -108,6 +108,22 @@ async function loadTodos() {
         const date = new Date(todo.createdAt).toLocaleString();
         li.innerText = `${todo.task} (${date})`;
 
+        // DELETE BUTTON
+        const btn = document.createElement("button");
+        btn.innerText = "❌";
+        btn.classList.add("delete");
+
+        btn.onclick = async () => {
+            await fetch(API + "/" + todo._id, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": localStorage.getItem("token")
+                }
+            });
+            loadTodos();
+        };
+
+        li.appendChild(btn);
         list.appendChild(li);
     });
 }
@@ -115,7 +131,7 @@ async function loadTodos() {
 // PAYMENT
 function goToPayment(){
     if (cart.length === 0) {
-        alert("Cart empty");
+        alert("Cart is empty");
         return;
     }
 

@@ -19,9 +19,17 @@
 let amount = localStorage.getItem("amount") || 100;
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-document.getElementById("amountText").innerText =
-    `Total ₹${amount} | Items: ${cart.length}`;
+let details = "";
 
+// SHOW PRODUCTS
+cart.forEach(item => {
+    details += item.product + " ₹" + item.price + "\n";
+});
+
+document.getElementById("amountText").innerText =
+    details + "\nTotal: ₹" + amount;
+
+// PAYMENT SUCCESS
 async function success() {
 
     await fetch("/api/payment/pay", {
@@ -42,6 +50,7 @@ async function success() {
     window.location.href = "/";
 }
 
+// PAYMENT FAIL
 function fail() {
     alert("Payment Failed ❌");
 }

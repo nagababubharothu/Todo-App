@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 
-// Dummy payment save
 router.post("/pay", (req, res) => {
     const { amount, cart } = req.body;
 
