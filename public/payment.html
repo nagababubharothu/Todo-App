@@ -9,15 +9,37 @@
 <div class="container">
 <h2>Dummy Payment Gateway 💳</h2>
 
-<p>Amount: ₹100</p>
+<p id="amountText"></p>
 
 <button onclick="success()" class="primary">Pay Successfully</button>
 <button onclick="fail()" class="delete">Fail Payment</button>
 </div>
 
 <script>
-function success() {
-    window.location.href = "/payment_success.html";
+let amount = localStorage.getItem("amount") || 100;
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+document.getElementById("amountText").innerText =
+    `Total ₹${amount} | Items: ${cart.length}`;
+
+async function success() {
+
+    await fetch("/api/payment/pay", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": localStorage.getItem("token")
+        },
+        body: JSON.stringify({
+            amount: amount,
+            cart: cart
+        })
+    });
+
+    alert("Payment successful ₹" + amount);
+    localStorage.removeItem("cart");
+
+    window.location.href = "/";
 }
 
 function fail() {

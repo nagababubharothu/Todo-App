@@ -1,5 +1,9 @@
 const API = "/api/todos";
 
+let cart = [];
+let currentPrice = 0;
+let currentProduct = "";
+
 // ON LOAD
 window.onload = function () {
     const token = localStorage.getItem("token");
@@ -12,32 +16,14 @@ window.onload = function () {
     }
 };
 
-// SHOW LOGIN
 function showLogin() {
     document.getElementById("loginSection").style.display = "block";
     document.getElementById("todoSection").style.display = "none";
 }
 
-// SHOW TODO
 function showTodo() {
     document.getElementById("loginSection").style.display = "none";
     document.getElementById("todoSection").style.display = "block";
-}
-
-// SIGNUP
-async function signup() {
-    const username = document.getElementById("username").value;
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-
-    await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({username, email, password})
-    });
-
-    alert("Signup successful");
-    window.location.href = "login.html";
 }
 
 // LOGIN
@@ -78,29 +64,32 @@ async function addTask() {
     loadTodos();
 }
 
-// SCRAPE TASK
+// SCRAPE
 async function scrapeTask() {
     const url = document.getElementById("urlInput").value;
 
-    const res = await fetch("/api/scrape/data?url=" + url);
+    const res = await fetch("/api/scrape/data?url=" + encodeURIComponent(url));
     const data = await res.json();
 
-    alert("Scraped: " + data[0]);
+    currentPrice = data.price;
+    currentProduct = data.title;
 
-    // add first scraped item as todo
-    await fetch(API, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": localStorage.getItem("token")
-        },
-        body: JSON.stringify({task: data[0]})
+    alert(`${data.title} ₹${data.price}`);
+
+    // ADD TODO
+    await addTask(data.title);
+
+    // ADD CART
+    cart.push({
+        product: data.title,
+        price: data.price,
+        time: new Date().toLocaleString()
     });
 
     loadTodos();
 }
 
-// LOAD TODOS
+// LOAD TODOS WITH DATE
 async function loadTodos() {
     const res = await fetch(API, {
         headers: {
@@ -115,29 +104,26 @@ async function loadTodos() {
 
     todos.forEach(todo => {
         const li = document.createElement("li");
-        li.innerText = todo.task;
 
-        const btn = document.createElement("button");
-        btn.innerText = "❌";
-        btn.classList.add("delete");
+        const date = new Date(todo.createdAt).toLocaleString();
+        li.innerText = `${todo.task} (${date})`;
 
-        btn.onclick = async () => {
-            await fetch(API + "/" + todo._id, {
-                method: "DELETE",
-                headers: {
-                    "Authorization": localStorage.getItem("token")
-                }
-            });
-            loadTodos();
-        };
-
-        li.appendChild(btn);
         list.appendChild(li);
     });
 }
 
-// PAYMENT NAVIGATION
+// PAYMENT
 function goToPayment(){
+    if (cart.length === 0) {
+        alert("Cart empty");
+        return;
+    }
+
+    const total = cart.reduce((sum, item) => sum + item.price, 0);
+
+    localStorage.setItem("amount", total);
+    localStorage.setItem("cart", JSON.stringify(cart));
+
     window.location.href = "/payment.html";
 }
 

@@ -8,30 +8,36 @@ router.get("/data", async (req, res) => {
     try {
         let url = req.query.url;
 
-        // ✅ default URL if not provided
-        if (!url || url.trim() === "") {
-            url = "https://news.ycombinator.com";
+        if (!url) {
+            url = "http://books.toscrape.com/";
         }
 
         const response = await axios.get(url);
         const $ = cheerio.load(response.data);
 
-        let results = [];
+        let result = {
+            title: "Sample Product",
+            price: 100
+        };
 
-        $("h1, h2, h3").each((i, el) => {
-            results.push($(el).text());
-        });
+        // ✅ Better selectors for books site
+        const title = $(".product_pod h3 a").first().attr("title");
+        if (title) result.title = title;
 
-        // ✅ avoid empty crash
-        if (results.length === 0) {
-            results.push("No data found");
+        const priceText = $(".price_color").first().text();
+        if (priceText) {
+            const price = parseInt(priceText.replace(/[^0-9]/g, ""));
+            if (price) result.price = price;
         }
 
-        res.json(results);
+        res.json(result);
 
     } catch (err) {
         console.log(err.message);
-        res.status(500).json({ error: "Scraping failed" });
+        res.json({
+            title: "Default Product",
+            price: 100
+        });
     }
 });
 

@@ -8,7 +8,6 @@
 
 <div class="container">
 
-<!-- LOGIN -->
 <div id="loginSection">
     <h2>Login</h2>
 
@@ -20,34 +19,20 @@
     <a href="signup.html">Signup</a>
 </div>
 
-<!-- DASHBOARD -->
 <div id="todoSection" style="display:none;">
-    <h2>Your Todo List</h2>
+    <h2>Todo Dashboard</h2>
 
-    <!-- ADD TASK -->
-    <input id="taskInput" placeholder="Enter new task">
-    <button onclick="addTask()">Add Task</button>
+    <input id="taskInput" placeholder="Enter task">
+    <button onclick="addTask()">Add</button>
 
-    <hr>
+    <input id="urlInput" placeholder="Enter URL for scraping">
+    <button onclick="scrapeTask()">Scrape</button>
 
-    <!-- SCRAPING -->
-    <h3>Scrape Website</h3>
-    <input id="urlInput" placeholder="Enter URL (https://...)">
-    <button onclick="scrapeTask()">Scrape & Add</button>
-
-    <hr>
-
-    <!-- TASK LIST -->
-    <ul id="todoList"></ul>
-
-    <hr>
-
-    <!-- PAYMENT -->
-    <h3>Payment</h3>
     <button onclick="goToPayment()">Go to Payment</button>
 
-    <br><br>
-    <button onclick="logout()" class="logout">Logout</button>
+    <ul id="todoList"></ul>
+
+    <button onclick="logout()">Logout</button>
 </div>
 
 </div>
